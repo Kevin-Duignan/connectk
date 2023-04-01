@@ -2,6 +2,20 @@ from helpers import drop_piece
 from checker import end_of_game
 import random
 
+def cpu_player_easy(board, player, config):
+    """
+    Executes a move for the CPU on easy difficulty. This function
+    plays a randomly selected column.
+
+    :param board: The game board, 2D list of RxC dimensions.
+    :param player: The player whose turn it is, integer value between 2 and 100.
+    :return: Column that the piece was dropped into, int.
+    """
+    # Implement your solution below
+    while True:
+        random_column = random.randint(1, config["columns"])
+        if drop_piece(board, player, random_column):
+            return random_column
 
 def cpu_player_medium(board, cpu_player, config):
     """
@@ -40,6 +54,6 @@ def cpu_player_medium(board, cpu_player, config):
 
     # If no move to block or win
     while True:
-        cpu_move = random.randrange(1, 8)  # random place to drop
+        cpu_move = random.randrange(1, config["columns"])  # random place to drop
         if drop_piece(board, cpu_player, cpu_move):
             return cpu_move
