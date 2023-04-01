@@ -196,6 +196,16 @@ def print_board(board, config):
         print(double_line)
 
 def drop_piece(board, player, column):
+    """
+    Drops a piece into the game board in the given column.
+    Please note that this function expects the column index
+    to start at 1.
+
+    :param board: The game board, 2D list of rows x columns dimensions.
+    :param player: The player dropping the piece, int.
+    :param column: The index of column to drop the piece into, int.
+    :return: True if piece was successfully dropped, False if not.
+    """
     # Iterate through board from bottom up
     if 1 <= column <= len(board[0]):
         for row in reversed(board):
@@ -205,6 +215,15 @@ def drop_piece(board, player, column):
                 return True
     # If all spaces are filled
     return False
+
+def execute_player_turn(player, board):
+    """
+    Prompts user for a legal move given the current game board
+    and executes the move.
+
+    :return: Column that the piece was dropped into, int.
+    """
+    pass
 
 
 # print_board(create_board(10, 11), config={
