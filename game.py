@@ -136,3 +136,9 @@ def connect4_inputs():
         clear_screen()
         exit()
     return connect4_config
+
+def run_game():
+    """
+    Executes the logic needed to run a game of ConnectK
+    """
+    pass
