@@ -223,8 +223,15 @@ def execute_player_turn(player, board):
 
     :return: Column that the piece was dropped into, int.
     """
-    pass
-
+    column = int(
+        input(
+            f"Player {player}, please enter the column you would like to drop your piece into: "
+        )
+    )
+    if drop_piece(board, player, column):
+        return column
+    else:
+        print("Invalid turn, please try again.")
 
 # print_board(create_board(10, 11), config={
 #     "rows": 10,
