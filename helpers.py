@@ -195,7 +195,16 @@ def print_board(board, config):
             print("\n" + dotted_line)
         print(double_line)
 
-
+def drop_piece(board, player, column):
+    # Iterate through board from bottom up
+    if 1 <= column <= len(board[0]):
+        for row in reversed(board):
+            # Drop player piece in the lowest free space
+            if row[column - 1] == 0: # Column is 1 indexed
+                row[column -1] == player
+                return True
+    # If all spaces are filled
+    return False
 
 
 # print_board(create_board(10, 11), config={
