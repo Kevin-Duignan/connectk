@@ -2,6 +2,7 @@ import os
 
 # Configuration dictionary for each new game of connect4/connectk
 CONFIG = {
+    "game": "",  # ["connect4", "connectk"]
     "rows": 0,
     "columns": 0,
     "win_pieces": 0,  # How many pieces need to be connected in order to win
@@ -39,10 +40,10 @@ def print_rules(game):
     """
     Prints the rules of the game.
 
-    :param game: The type of game selected: "4" or "k"
+    :param game: The type of game selected: "connect4" or "connectk"
     :return: None
     """
-    if game == "4":
+    if game == "connect4":
         print("================= Rules =================")
         print("Connect 4 is a two-player game where the")
         print("objective is to get four of your pieces")
@@ -53,7 +54,7 @@ def print_rules(game):
         print("grid is filled and no player has won,")
         print("the game is a draw.")
         print("========================================")
-    elif game == "k":
+    elif game == "connectk":
         print("================= Rules ======================")
         print("** Please read the rules of Connect 4 first **")
         print("Connect K runs on the same basis of connect 4,")
@@ -69,7 +70,10 @@ def print_rules(game):
 
 
 def connectk_inputs():
+
     connectk_config = CONFIG
+    connectk_config["game"] += "connectk"
+
     print("=============== Connect K ===============")
     print("1. View Rules")
     print("2. Play Connect K")
@@ -79,8 +83,9 @@ def connectk_inputs():
         "Please select an option [1, 2, 3]: ", ["1", "2", "3"]
     )
     clear_screen()
+
     if connectk_option == "1":  # Rules
-        print_rules("k")
+        print_rules(connectk_config["game"])
         home_input = validate_input(
             "Please select an option [home, exit]: ", ["home", "exit"]
         )
@@ -89,40 +94,52 @@ def connectk_inputs():
         else:  # Exit
             clear_screen()
             exit()
+
     elif connectk_option == "2":  # Configure game
-        connectk_config["rows"] = int(validate_input(
-            "Input the number of rows for your board (max 1000): ",
-            [str(i) for i in range(1, 1001)],
-        ))
-        connectk_config["columns"] = int(validate_input(
-            "Input the number of columns for your board (max 1000): ",
-            [str(i) for i in range(1, 1001)],
-        ))
+        connectk_config["rows"] = int(
+            validate_input(
+                "Input the number of rows for your board (max 1000): ",
+                [str(i) for i in range(1, 1001)],
+            )
+        )
+        connectk_config["columns"] = int(
+            validate_input(
+                "Input the number of columns for your board (max 1000): ",
+                [str(i) for i in range(1, 1001)],
+            )
+        )
         # Calculate the maximum value a user can input while still making the game valid
         max_input = max(connectk_config["rows"], connectk_config["columns"])
-        connectk_config["win_pieces"] = int(validate_input(
-            "Input the number of connected pieces needed to win (can't be larger than row and column number): ",
-            [
-                str(i) for i in range(1, max_input + 1)
-            ],  # Valid inputs between 1 and the larger of row and column number
-        ))
-        connectk_config["human_players"] = int(validate_input(
-            "Input the number of human players (total players can't be larger than row and column number): ",
-            [str(i) for i in range(0, max_input + 1)],
-        ))
-        connectk_config["cpu_players"] = int(validate_input(
-            "Input the number of CPU players (total players can't be larger than row and column number): ",
-            [
-                str(i)
-                for i in range(0, max_input - connectk_config["human_players"] + 1)
-            ],  # CPU players + human players cannot exceed max input
-        ))
+        connectk_config["win_pieces"] = int(
+            validate_input(
+                "Input the number of connected pieces needed to win (can't be larger than row and column number): ",
+                [
+                    str(i) for i in range(1, max_input + 1)
+                ],  # Valid inputs between 1 and the larger of row and column number
+            )
+        )
+        connectk_config["human_players"] = int(
+            validate_input(
+                "Input the number of human players (total players can't be larger than row and column number): ",
+                [str(i) for i in range(0, max_input + 1)],
+            )
+        )
+        connectk_config["cpu_players"] = int(
+            validate_input(
+                "Input the number of CPU players (total players can't be larger than row and column number): ",
+                [
+                    str(i)
+                    for i in range(0, max_input - connectk_config["human_players"] + 1)
+                ],  # CPU players + human players cannot exceed max input
+            )
+        )
         for i in range(connectk_config["cpu_players"]):
             level = validate_input(
                 f"Input the difficulty level for CPU no. {i + 1}: ",
                 ["easy", "medium", "hard"],
             )
             connectk_config["cpu_levels"].append(level)
+
     else:  # Exit
         clear_screen()
         exit()
@@ -132,6 +149,7 @@ def connectk_inputs():
 def connect4_inputs():
 
     connect4_config = CONFIG
+    connect4_config["game"] += "connect4"
     connect4_config["rows"] = 7
     connect4_config["columns"] = 6
     connect4_config["win_pieces"] = 4
@@ -200,19 +218,26 @@ def main():
     elif menu_option == "2":
         connect4_config = connect4_inputs()
         print(connect4_config)
+    else:
+        clear_screen()
+        exit()
+
 
 def create_board(rows, columns):
+
     """
     Returns a 2D list of {rows} rows and {columns} columns to represent
     the game board. Default cell value is 0.
-    
+
     :param rows: The configured number of rows
     :param columns: The configured number of columns
     :return: A 2D list of 6x7 dimensions.
     """
     board = [
         [0 for _ in range(columns)] for _ in range(rows)
-    ] # List of lists filled with 0
+    ]  # List of lists filled with 0
     return board
+
+
 if __name__ == "__main__":
     main()
