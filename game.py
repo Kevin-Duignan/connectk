@@ -31,14 +31,14 @@ def connectk_inputs():
     elif connectk_option == "2":  # Configure game
         connectk_config["rows"] = int(
             validate_input(
-                "Input the number of rows for your board (max 100): ",
-                [str(i) for i in range(1, 101)],
+                "Input the number of rows for your board (max 100, min 2): ",
+                [str(i) for i in range(2, 101)],
             )
         )
         connectk_config["columns"] = int(
             validate_input(
-                "Input the number of columns for your board (max 100): ",
-                [str(i) for i in range(1, 101)],
+                "Input the number of columns for your board (max 100, min 2): ",
+                [str(i) for i in range(2, 101)],
             )
         )
         # Calculate the maximum value a user can input while still making the game valid
