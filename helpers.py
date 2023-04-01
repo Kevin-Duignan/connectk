@@ -116,15 +116,17 @@ def print_board(board, config):
         
     else: # Connect K
         # To keep alignment
-        game_name = " Connect K " if columns % 2 == 1 else " ConnectK "
+        game_name = " ConnectK " if columns % 2 == 1 else " Connect K "
+        # Double line is used to compute length of all other lines
         double_line = ""
         player_count = config["human_players"] + config["cpu_players"]
         player_symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        for i in range(columns + 1):
+        for i in range(columns):
             if i == 0 and columns % 2 == 1:
                 double_line += "====="
             else:
                 double_line += "===="
+        double_line += "="
         # Always even so always return an int
         partial_line = double_line[:int((len(double_line) / 2) - (len(game_name) / 2))]
         player_line = "| Players: "
@@ -150,45 +152,64 @@ def print_board(board, config):
         
         # Start with two spaces to account for left line going down
         column_numbers = "  "
-        column = 1 
+        column = 1
         for i in range(len(double_line)):
             if column > columns:
                 break
-            elif i == 0:
+            elif i % 4 == 0: # Spacing between numbers necessary
                 column_numbers += str(column)
                 column += 1
-            elif i % 4 == 0: # Spacing
-                column_numbers += str(column)
-                column += 1
-            else:
+            elif column <= 9:
                 column_numbers += " "
-                
+            else: # Double digits
+                if (i + 1) % 4 == 0:
+                    # Remove last space to account for extra digit
+                    continue
+                else:
+                    column_numbers += " "
+                    
         dotted_line = ""
-        for i in range(len(double_line)):
+        for i in range(len(double_line) - 1): # -1 because last column should always be 0
             if i == 0 or i % 4 == 0:
                 dotted_line += " "
             else:
                 dotted_line += "-"
+
         print(partial_line, end="")
         print(game_name, end="")
         print(partial_line)
+
         print(player_line)
         print(single_line)
-        print(double_line)
         print(column_numbers)
         print(dotted_line)
-print_board(create_board(6, 7), config={
-    "rows": 10,
-    "columns": 12,
-    "game": "connectk",
-    "human_players": 4,
-    "cpu_players": 3
-})
+        for row in range(rows):
+            print("|", end="")
+            for column in range(columns):
+                if board[row][column] == 0:
+                    print("   |", end="")
+                elif board[row][column] <= 26:
+                    print(f" {player_symbols[board[row][column] - 1]} |", end="")
+                else:
+                    print(f" {board[row][column]}|", end="")
+            print("\n" + dotted_line)
+        print(double_line)
 
-print_board(create_board(6, 7), config={
-    "rows": 6,
-    "columns": 7,
-    "game": "connect4",
-    "human_players": 4,
-    "cpu_players": 3
-})
+
+
+
+# print_board(create_board(10, 11), config={
+#     "rows": 10,
+#     "columns": 11,
+#     "game": "connectk",
+#     "human_players": 4,
+#     "cpu_players": 3
+# })
+
+# print_board(create_board(6, 7), config={
+#     "rows": 6,
+#     "columns": 7,
+#     "game": "connect4",
+#     "human_players": 4,
+#     "cpu_players": 3
+# })
