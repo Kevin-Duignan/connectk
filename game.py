@@ -1,6 +1,7 @@
+import random
 from helpers import *
-from main import main
-
+from checker import end_of_game
+from cpus import *
 
 def connectk_inputs():
 
@@ -77,13 +78,13 @@ def connectk_inputs():
         connectk_config["total_players"] = connectk_config["cpu_players"] + connectk_config["human_players"]
         for i in range(connectk_config["cpu_players"]):
             level = validate_input(
-                f"Input the difficulty level for CPU no. {i + 1}: ",
+                f"Input the difficulty level for CPU no. {i + 1} from [easy, medium, hard]: ",
                 ["easy", "medium", "hard"],
             )
             connectk_config["cpu_levels"].append(level)
         connectk_config["first_turn"] = validate_input(
-            "Input which player type you want to begin the game from [humans, cpus, mix]: ",
-            ["humans, cpus, mix"],
+            "Input which player type you want to begin the game from [humans, cpus, randomized]: ",
+            ["humans", "cpus", "randomized"],
         )
     else:  # Exit
         clear_screen()
@@ -132,13 +133,78 @@ def connect4_inputs():
             ["easy", "medium", "hard"],
         )
         connect4_config["cpu_levels"].append(difficulty)
+        connect4_config["first_turn"] = validate_input("Please choose which player type will go first from [humans, cpus, randomized]: ", ["humans, cpus, randomized"])
+
     else:  # Exit
         clear_screen()
         exit()
     return connect4_config
 
-def run_game():
+def run_game(config):
     """
     Executes the logic needed to run a game of ConnectK
     """
-    pass
+    board = create_board(config["rows"], config["columns"])
+    
+    if config["game"] == "connect4":
+        pass # Much easier to implement
+    elif config["game"] == "connectk":
+        # Order of players and player type
+        order = {}
+        
+        if config["first_turn"] == "humans":
+            for turn in range(1, config["total_players"] + 1):
+                if turn <= config["human_players"]: # Turns starting at 1
+                    order[turn] = "human"
+                else: # For cpu turns
+                    cpu_turn = turn - config["human_players"] # Starting from 0 to compute difficulty for each cpu
+                    order[turn] = config["cpu_levels"][cpu_turn]
+        elif config["first_turn"] == "cpus":
+            for turn in range(config["total_players"]):
+                if turn <= config["cpu_players"]:
+                    order[turn] = config["cpu_levels"][cpu_turn] # Each turn that is a cpu will have a difficulty attached to it
+                else: # Human cpus
+                    order[turn] = "human"
+        else: # Randomized order
+            cpu_turn = 0
+            human_turn = 0
+            for turn in range(1, config["total_players"] + 1):
+                is_human_turn = random.randint(1,2)
+                if is_human_turn and human_turn < config["human_players"]:
+                    order[turn] = "human"
+                    human_turn += 1
+                elif cpu_turn < config["cpu_players"]: # CPU turn
+                    order[turn] = config["cpu_levels"][cpu_turn]
+                    cpu_turn += 1
+                else: # Human turn anyway if cpus all cpus are assigned a turn
+                    order[turn] = "human"
+                    cpu_turn += 1
+            
+            # Go through order
+            while True:
+                clear_screen()
+                print_board(board)
+                game_status = end_of_game(board, config)
+                if game_status == 0:
+                    for turn in range(1, config["total_players"]):
+                        if order[turn] == "human":
+                            print(f"Your move, Player {turn}!")
+                            move = execute_player_turn(turn, board)
+                        elif order[turn] == "easy":
+                            print(f"It's Player {turn}'s turn, this one might get lucky...")
+                            move = cpu_player_easy(board, turn, config)
+                        elif order[turn] == "medium":
+                            print(f"It's Player {turn}'s turn, don't underestimate them!")
+                            move = cpu_player_medium(board, turn, config)
+                        else: # cpu hard
+                            print(f"It's Player {turn}'s turn, think you can beat them? Think again")
+                            move = cpu_player_hard(board, turn, config)
+                        print(f"Player {turn}'s move was {move}")    
+                # If game is over
+                else:
+                    break
+            if game_status == 101:
+                print("It's a draw!")
+            else:
+                print(f"Player {game_status} wins!")
+                
