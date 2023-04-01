@@ -31,14 +31,14 @@ def connectk_inputs():
     elif connectk_option == "2":  # Configure game
         connectk_config["rows"] = int(
             validate_input(
-                "Input the number of rows for your board (max 1000): ",
-                [str(i) for i in range(1, 1001)],
+                "Input the number of rows for your board (max 100): ",
+                [str(i) for i in range(1, 101)],
             )
         )
         connectk_config["columns"] = int(
             validate_input(
-                "Input the number of columns for your board (max 1000): ",
-                [str(i) for i in range(1, 1001)],
+                "Input the number of columns for your board (max 100): ",
+                [str(i) for i in range(1, 101)],
             )
         )
         # Calculate the maximum value a user can input while still making the game valid
@@ -80,7 +80,10 @@ def connectk_inputs():
                 ["easy", "medium", "hard"],
             )
             connectk_config["cpu_levels"].append(level)
-
+        connectk_config["first_turn"] = validate_input(
+            "Input which player type you want to begin the game from [humans, cpus, mix]: ",
+            ["humans, cpus, mix"],
+        )
     else:  # Exit
         clear_screen()
         exit()

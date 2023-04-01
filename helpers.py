@@ -9,6 +9,7 @@ CONFIG = {
     "human_players": 0,  # No. of human players
     "cpu_players": 0,  # No. of CPUs
     "cpu_levels": [],  # List of length cpu_players with a difficulty in ["easy", "medium", "hard"] for each cpu
+    "first_turn": [], # ["humans", "cpus", "mix"]
 }
 
 
@@ -83,3 +84,111 @@ def create_board(rows, columns):
         [0 for _ in range(columns)] for _ in range(rows)
     ]  # List of lists filled with 0
     return board
+
+def print_board(board, config):
+    """
+    Prints the game board to the console.
+
+    :param board: The game board, 2D list of column x row dimensions.
+    :param config: The configuration dictionary of the current game.
+    :return: None
+    """
+    rows = config["rows"]
+    columns = config["columns"]
+    
+    if config["game"] == "connect4": # 6x7 board
+        # Board layout
+        print("========== Connect4 =========")
+        print("Player 1: X       Player 2: O\n")
+        print("  1   2   3   4   5   6   7")
+        print(" --- --- --- --- --- --- ---")
+        for row in range(rows):
+            print("|", end="")
+            for col in range(columns):
+                if board[row][col] == 1:
+                    print(" X |", end="")
+                elif board[row][col] == 2:
+                    print(" O |", end="")
+                elif board[row][col] == 0:
+                    print("   |", end="")
+            print("\n --- --- --- --- --- --- ---")
+        print("=============================")
+        
+    else: # Connect K
+        # To keep alignment
+        game_name = " Connect K " if columns % 2 == 1 else " ConnectK "
+        double_line = ""
+        player_count = config["human_players"] + config["cpu_players"]
+        player_symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        for i in range(columns + 1):
+            if i == 0 and columns % 2 == 1:
+                double_line += "====="
+            else:
+                double_line += "===="
+        # Always even so always return an int
+        partial_line = double_line[:int((len(double_line) / 2) - (len(game_name) / 2))]
+        player_line = "| Players: "
+        
+        # Use alphabetical letters as symbols for first 26 players and use the player number for the rest
+        for i in range(player_count):
+            if i < 26:
+                player_line += player_symbols[i]
+            else:
+                player_line += i
+            
+            # Add commas if not last player
+            if i != player_count - 1:
+                player_line += ", "
+            else:
+                for i in range(len(player_line), len(double_line)):
+                    if i == len(double_line) - 1:
+                        player_line += "|"
+                    else:
+                        player_line += " "
+        
+        single_line = double_line.replace("=", "-")
+        
+        # Start with two spaces to account for left line going down
+        column_numbers = "  "
+        column = 1 
+        for i in range(len(double_line)):
+            if column > columns:
+                break
+            elif i == 0:
+                column_numbers += str(column)
+                column += 1
+            elif i % 4 == 0: # Spacing
+                column_numbers += str(column)
+                column += 1
+            else:
+                column_numbers += " "
+                
+        dotted_line = ""
+        for i in range(len(double_line)):
+            if i == 0 or i % 4 == 0:
+                dotted_line += " "
+            else:
+                dotted_line += "-"
+        print(partial_line, end="")
+        print(game_name, end="")
+        print(partial_line)
+        print(player_line)
+        print(single_line)
+        print(double_line)
+        print(column_numbers)
+        print(dotted_line)
+print_board(create_board(6, 7), config={
+    "rows": 10,
+    "columns": 12,
+    "game": "connectk",
+    "human_players": 4,
+    "cpu_players": 3
+})
+
+print_board(create_board(6, 7), config={
+    "rows": 6,
+    "columns": 7,
+    "game": "connect4",
+    "human_players": 4,
+    "cpu_players": 3
+})
