@@ -74,6 +74,7 @@ def connectk_inputs():
                 ],  # CPU players + human players cannot exceed max input
             )
         )
+        connectk_config["total_players"] = connectk_config["cpu_players"] + connectk_config["human_players"]
         for i in range(connectk_config["cpu_players"]):
             level = validate_input(
                 f"Input the difficulty level for CPU no. {i + 1}: ",
@@ -97,6 +98,7 @@ def connect4_inputs():
     connect4_config["rows"] = 7
     connect4_config["columns"] = 6
     connect4_config["win_pieces"] = 4
+    connect4_config["total_players"] = 2
 
     print("=============== Connect 4 ===============")
     print("1. View Rules")
