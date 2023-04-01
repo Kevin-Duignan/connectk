@@ -120,16 +120,22 @@ def connectk_inputs():
         )
         connectk_config["human_players"] = int(
             validate_input(
-                "Input the number of human players (total players can't be larger than row and column number): ",
+                "Input the number of human players (total players can't be larger than row and column number, or lower than 2): ",
                 [str(i) for i in range(0, max_input + 1)],
             )
         )
+        if connectk_config["human_players"] == 0:
+            min_cpus = 2
+        elif connectk_config["human_players"] == 1:
+            min_cpus = 1
+        else:
+            min_cpus = 0
         connectk_config["cpu_players"] = int(
             validate_input(
-                "Input the number of CPU players (total players can't be larger than row and column number): ",
+                "Input the number of CPU players (total players can't be larger than row and column number, or lower than 2): ",
                 [
                     str(i)
-                    for i in range(0, max_input - connectk_config["human_players"] + 1)
+                    for i in range(min_cpus, max_input - connectk_config["human_players"] + 1)
                 ],  # CPU players + human players cannot exceed max input
             )
         )
