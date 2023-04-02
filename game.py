@@ -9,7 +9,49 @@ def run_game(board, config):
     """
 
     if config["game"] == "connect4":
-        pass  # Much easier to implement
+        if config["first_turn"] == "humans":
+            human = 1
+            cpu = 2
+        elif config["first_turn"] == "cpus":
+            cpu = 1
+            human = 2
+        else:
+            human = random.randint(1, 2)
+            cpu = 2 if human == 1 else 1
+        
+        while True:
+            clear_screen()
+            game_status = end_of_game(board)
+            difficulty = config["cpu_levels"][0]
+            for turn in range(1, 3):
+                if turn == human:
+                    print("Your move, Player!")
+                    move = execute_player_turn(turn, board)
+                elif turn == cpu:
+                    if difficulty == "easy":
+                        print( 
+                            f"It's Player {turn}'s turn, this one might get lucky..."
+                        )
+                        move = cpu_player_easy(board, turn, config)
+                    elif difficulty == "medium":
+                        print(
+                            f"It's Player {turn}'s turn, don't underestimate them!"
+                        )
+                        move = cpu_player_medium(board, turn, config)
+                    elif difficulty == "hard":
+                        print(
+                            f"It's Player {turn}'s turn, think you can beat them? Think again"
+                        )
+                        move = cpu_player_hard(board, turn, config)
+                    print(f"Player {turn}'s move is {move}")
+            # If game is over
+            else:
+                break
+        if game_status == "101":
+            print("It's a draw!")
+        else:
+            print(f"Player {game_status} wins!")
+            
     elif config["game"] == "connectk":
         # Order of players and player type
         order = {}
@@ -71,36 +113,10 @@ def run_game(board, config):
                             f"It's Player {turn}'s turn, think you can beat them? Think again"
                         )
                         move = cpu_player_hard(board, turn, config)
-                    # drop_piece(board, turn, move)
                     print(f"Player {turn}'s move was {move}")
-            # If game is over
             else:
                 break
         if game_status == 101:
             print("It's a draw!")
         else:
             print(f"Player {game_status} wins!")
-
-board = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-]
-
-run_game(config={
-    "game": "connectk",  # ["connect4", "connectk"]
-    "rows": 9,
-    "columns": 10,
-    "win_pieces": 5,  # How many pieces need to be connected in order to win
-    "human_players": 3,  # No. of human players
-    "cpu_players": 3,  # No. of CPUs
-    "total_players": 6,
-    "cpu_levels": ["easy", "medium", "hard"],  # List of length cpu_players with a difficulty in ["easy", "medium", "hard"] for each cpu
-    "first_turn": ["humans"],
-})

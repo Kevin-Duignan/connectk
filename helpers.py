@@ -198,7 +198,6 @@ def print_board(board, config):
                     print(f" {board[row][column]}|", end="")
             print("\n" + dotted_line)
         print(double_line)
-        print(board)
 
 
 def drop_piece(board, player, column):
@@ -217,7 +216,7 @@ def drop_piece(board, player, column):
         for row in reversed(board):
             # Drop player piece in the lowest free space
             if row[column - 1] == 0:  # Column is 1 indexed
-                row[column - 1] == player
+                row[column - 1] = player
                 return True
     # If all spaces are filled
     return False
