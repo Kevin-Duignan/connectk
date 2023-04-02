@@ -1,6 +1,7 @@
 from helpers import *
 from checker import end_of_game
 from cpus import *
+import random
 
 
 def run_game(board, config):
@@ -9,40 +10,50 @@ def run_game(board, config):
     """
 
     if config["game"] == "connect4":
-        if config["first_turn"] == "humans":
-            human = 1
-            cpu = 2
-        elif config["first_turn"] == "cpus":
-            cpu = 1
-            human = 2
-        else:
-            human = random.randint(1, 2)
-            cpu = 2 if human == 1 else 1
-        
+        exists_cpu = False
+        if config["cpu_players"] == 1: # Human vs CPU
+            exists_cpu = True
+            difficulty = config["cpu_levels"][0]
+            if config["first_turn"] == "humans":
+                human = 1
+                cpu = 2
+            elif config["first_turn"] == "cpus":
+                cpu = 1
+                human = 2
+            else:
+                human = random.randint(1, 2)
+                cpu = 2 if human == 1 else 1
+
         while True:
             clear_screen()
-            game_status = end_of_game(board)
-            difficulty = config["cpu_levels"][0]
-            for turn in range(1, 3):
-                if turn == human:
-                    print("Your move, Player!")
-                    move = execute_player_turn(turn, board)
-                elif turn == cpu:
-                    if difficulty == "easy":
-                        print( 
-                            f"It's Player {turn}'s turn, this one might get lucky..."
-                        )
-                        move = cpu_player_easy(board, turn, config)
-                    elif difficulty == "medium":
-                        print(
-                            f"It's Player {turn}'s turn, don't underestimate them!"
-                        )
-                        move = cpu_player_medium(board, turn, config)
-                    elif difficulty == "hard":
-                        print(
-                            f"It's Player {turn}'s turn, think you can beat them? Think again"
-                        )
-                        move = cpu_player_hard(board, turn, config)
+            game_status = end_of_game(board, config)
+            if game_status == 0:
+                for turn in range(1, 3):
+                    print_board(board, config)
+                    if not exists_cpu:
+                        print(f"Your move, Player {turn}!")
+                        move = execute_player_turn(turn, board)
+                    else: # exists_cpu == True
+                        if turn == human:
+                            print("Your move, Player!")
+                            move = execute_player_turn(turn, board)
+                        elif turn == cpu:
+                            if difficulty == "easy":
+                                print( 
+                                    f"It's Player {turn}'s turn, this one might get lucky..."
+                                )
+                                move = cpu_player_easy(board, turn, config)
+                            elif difficulty == "medium":
+                                print(
+                                    f"It's Player {turn}'s turn, don't underestimate them!"
+                                )
+                                move = cpu_player_medium(board, turn, config)
+                            elif difficulty == "hard":
+                                print(
+                                    f"It's Player {turn}'s turn, think you can beat them? Think again"
+                                )
+                                move = cpu_player_hard(board, turn, config)
+                    
                     print(f"Player {turn}'s move is {move}")
             # If game is over
             else:
