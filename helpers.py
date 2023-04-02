@@ -10,7 +10,7 @@ CONFIG = {
     "cpu_players": 0,  # No. of CPUs
     "total_players": 0,
     "cpu_levels": [],  # List of length cpu_players with a difficulty in ["easy", "medium", "hard"] for each cpu
-    "first_turn": []  # ["humans", "cpus", "mix"]
+    "first_turn": [],  # ["humans", "cpus", "mix"]
 }
 
 
@@ -198,6 +198,7 @@ def print_board(board, config):
                     print(f" {board[row][column]}|", end="")
             print("\n" + dotted_line)
         print(double_line)
+        print(board)
 
 
 def drop_piece(board, player, column):
@@ -229,29 +230,14 @@ def execute_player_turn(player, board):
 
     :return: Column that the piece was dropped into, int.
     """
-    column = int(
-        input(
-            f"Player {player}, please enter the column you would like to drop your piece into: "
+    while True:
+        column = int(
+            validate_input(
+                f"Player {player}, please enter the column that you would like to drop your piece into: ",
+                [str(i) for i in range(1, len(board[0]) + 1)],
+            )
         )
-    )
-    if drop_piece(board, player, column):
-        return column
-    else:
-        print("Invalid turn, please try again.")
-
-
-# print_board(create_board(10, 11), config={
-#     "rows": 10,
-#     "columns": 11,
-#     "game": "connectk",
-#     "human_players": 4,
-#     "cpu_players": 3
-# })
-
-# print_board(create_board(6, 7), config={
-#     "rows": 6,
-#     "columns": 7,
-#     "game": "connect4",
-#     "human_players": 4,
-#     "cpu_players": 3
-# })
+        if drop_piece(board, player, column):
+            return column
+        else:
+            print("Invalid move, try again.")

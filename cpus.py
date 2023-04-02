@@ -2,6 +2,7 @@ from helpers import drop_piece
 from checker import end_of_game
 import random
 
+
 def cpu_player_easy(board, player, config):
     """
     Executes a move for the CPU on easy difficulty. This function
@@ -16,6 +17,7 @@ def cpu_player_easy(board, player, config):
         random_column = random.randint(1, config["columns"])
         if drop_piece(board, player, random_column):
             return random_column
+
 
 def cpu_player_medium(board, cpu_player, config):
     """
@@ -34,22 +36,26 @@ def cpu_player_medium(board, cpu_player, config):
     for col_index in range(len(board[0])):
         cpu_move = col_index + 1
         new_board = [row[:] for row in board]
-        if drop_piece(new_board, cpu_player, cpu_move): # Simulate drop for self
-            if end_of_game(new_board) == cpu_player:
+        if drop_piece(new_board, cpu_player, cpu_move):  # Simulate drop for self
+            if end_of_game(new_board, config) == cpu_player:
                 drop_piece(board, cpu_player, cpu_move)  # Do a real drop
                 return cpu_move
 
     # Check for any possibility of loss
-    for opponent in range(1, len(config["total_players"] + 1)):
+    for opponent in range(1, config["total_players"] + 1):
         for col_index in range(len(board[0])):
             opponent_move = col_index + 1
             new_board = [row[:] for row in board]
-            if drop_piece(new_board, opponent, opponent_move):  # Simulate drop for opponent
+            if drop_piece(
+                new_board, opponent, opponent_move
+            ):  # Simulate drop for opponent
                 if (
-                    end_of_game(new_board) == opponent
+                    end_of_game(new_board, config) == opponent
                 ):  # If that drop wins for the opponent
                     cpu_move = opponent_move
-                    drop_piece(board, cpu_player, cpu_move)  # Block that drop with cpu move
+                    drop_piece(
+                        board, cpu_player, cpu_move
+                    )  # Block that drop with cpu move
                     return cpu_move
 
     # If no move to block or win
@@ -57,3 +63,8 @@ def cpu_player_medium(board, cpu_player, config):
         cpu_move = random.randrange(1, config["columns"])  # random place to drop
         if drop_piece(board, cpu_player, cpu_move):
             return cpu_move
+
+
+def cpu_player_hard(board, player, config):
+    # Configure cpu hard to be the same as cpu medium for now
+    return cpu_player_medium(board, player, config)

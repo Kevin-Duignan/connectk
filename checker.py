@@ -1,5 +1,4 @@
 from helpers import *
-from main import main
 
 
 def end_of_game(board, config):
@@ -7,16 +6,16 @@ def end_of_game(board, config):
     Checks if the game has ended with a winner
     or a draw.
 
-    :param board: The game board, 2D list of 6 rows x 7 columns.
-    :return: 0 if game is not over, 1 if player 1 wins, 2 if player 2 wins, 3 if draw.
+    :param board: The game board, 2D list of a rows x b columns.
+    :return: 0 if game is not over, the turn of the player that wins, or 101 if it's a draw.
     """
 
     # * Win Check
     def win(string):
         win_string = ""
         for player in range(1, config["total_players"] + 1):
-            for _ in range(len(board[0])):
-                if len(win_string) < config("win_pieces"):
+            for _ in range(config["columns"]):
+                if len(win_string) < config["win_pieces"]:
                     win_string += str(player)
             if win_string in string:
                 return player
@@ -54,7 +53,10 @@ def end_of_game(board, config):
                     i = row
                     j = col
                     while i < col and j >= row:
-                        diagonal_str += str(board[i][j])
+                        try:
+                            diagonal_str += str(board[i][j])
+                        except IndexError:
+                            pass
                         i += 1
                         j -= 1
                     exists = win(diagonal_str)
@@ -68,9 +70,12 @@ def end_of_game(board, config):
                 j = col
                 # Do this until row and column number are switched
                 while i <= col and j >= row:
-                    diagonal_str += str(board[i][j])
-                    i += 1
+                    try:
+                        diagonal_str += str(board[i][j])
+                    except IndexError:
+                        pass
                     j -= 1
+                    i += 1
                 exists = win(diagonal_str)
                 if exists:
                     return exists
@@ -87,6 +92,6 @@ def end_of_game(board, config):
 
     # * Keep Playing or Draw
     if filled_slots:
-        return 3  # All slots are filled so draw
+        return 101  # All slots are filled so draw
     else:
         return 0  # There are empty slots left so keep playing

@@ -1,5 +1,6 @@
-from helpers import clear_screen, validate_input
-from game import connect4_inputs, connectk_inputs, run_game
+from helpers import clear_screen, validate_input, CONFIG, print_rules, create_board
+from game import run_game
+
 
 def connectk_inputs():
 
@@ -73,7 +74,9 @@ def connectk_inputs():
                 ],  # CPU players + human players cannot exceed max input
             )
         )
-        connectk_config["total_players"] = connectk_config["cpu_players"] + connectk_config["human_players"]
+        connectk_config["total_players"] = (
+            connectk_config["cpu_players"] + connectk_config["human_players"]
+        )
         for i in range(connectk_config["cpu_players"]):
             level = validate_input(
                 f"Input the difficulty level for CPU no. {i + 1} from [easy, medium, hard]: ",
@@ -131,18 +134,22 @@ def connect4_inputs():
             ["easy", "medium", "hard"],
         )
         connect4_config["cpu_levels"].append(difficulty)
-        connect4_config["first_turn"] = validate_input("Please choose which player type will go first from [humans, cpus, randomized]: ", ["humans, cpus, randomized"])
+        connect4_config["first_turn"] = validate_input(
+            "Please choose which player type will go first from [humans, cpus, randomized]: ",
+            ["humans, cpus, randomized"],
+        )
 
     else:  # Exit
         clear_screen()
         exit()
     return connect4_config
 
+
 def main():
     """
     Start program, displays menu which leads to other functions.
 
-    :return: None
+    :return: config dict
     """
     clear_screen()
 
@@ -156,16 +163,15 @@ def main():
     clear_screen()
     if menu_option == "1":
         connectk_config = connectk_inputs()
-        print(run_game(connectk_config))
-        print(connectk_config)
+        board = create_board(connectk_config["rows"], connectk_config["columns"])
+        run_game(board, connectk_config)
     elif menu_option == "2":
         connect4_config = connect4_inputs()
-        print(run_game(connect4_config))
-        print(connect4_config)
+        board = create_board(connect4_config["rows"], connect4_config["columns"])
+        run_game(board, connect4_config)
     else:
         clear_screen()
         exit()
-
 
 if __name__ == "__main__":
     main()
